@@ -1,1 +1,105 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /* Accent (same in both themes) */
+    --color-accent: #cdff00;
+    --color-accent-light: #e3ff6e;
+    --color-accent-dark: #7ea300;
+    --color-accent-text: #0a0a0a;
+
+    /* Fonts */
+    --font-sans: 'DM Sans', sans-serif;
+    --font-display: 'Syne', sans-serif;
+}
+
+:root {
+    /* Light theme (default) */
+    /* --color-bg: #ffffff;
+    --color-bg-secondary: #f5f5f5;
+    --color-surface: #ffffff;
+    --color-border: #e5e5e5;
+    --color-text-primary: #0a0a0a;
+    --color-text-secondary: #525252;
+    --color-text-muted: #a3a3a3; */
+
+    --color-bg: rgb(13, 13, 13);
+    --color-bg-secondary: #0d0d0d;
+    --color-surface: #111111;
+    --color-border: #262626;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #a3a3a3;
+    --color-text-muted: #737373;
+}
+
+.dark {
+    --color-bg: rgb(13, 13, 13);
+    --color-bg-secondary: #0d0d0d;
+    --color-surface: #111111;
+    --color-border: #262626;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #a3a3a3;
+    --color-text-muted: #737373;
+}
+
+@theme inline {
+    --color-bg: var(--color-bg);
+    --color-bg-secondary: var(--color-bg-secondary);
+    --color-surface: var(--color-surface);
+    --color-border: var(--color-border);
+    --color-text-primary: var(--color-text-primary);
+    --color-text-secondary: var(--color-text-secondary);
+    --color-text-muted: var(--color-text-muted);
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) var(--color-bg-secondary);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    forced-color-adjust: none;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+    forced-color-adjust: none;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 999px;
+    forced-color-adjust: none;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #cdff00 !important;
+    forced-color-adjust: none;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
