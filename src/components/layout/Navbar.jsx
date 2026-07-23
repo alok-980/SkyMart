@@ -3,8 +3,8 @@ import { NavLink, useLocation, useNavigate } from 'react-router'
 import { ShoppingCart, LogOut } from 'lucide-react'
 import Logo from '../common/Logo.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
-// import CartDrawer from '../cart/CartDrawer.jsx'
-// import { cartDummyItems } from '../../data/cartDummy.js'
+import CartDrawer from '../cart/CartDrawer.jsx'
+import { cartDummyItems } from '../../data/cartDummy.js'
 
 const navLinks = [
     { label: 'Home', path: '/home' },
@@ -14,7 +14,7 @@ const navLinks = [
 
 const Navbar = () => {
     const { pathname } = useLocation()
-    // const [isCartOpen, setIsCartOpen] = useState(false)
+    const [isCartOpen, setIsCartOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const Navbar = () => {
                         </div>
 
                         <button
-                            // onClick={() => setIsCartOpen(true)}
+                            onClick={() => setIsCartOpen(true)}
                             className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer">
                             <ShoppingCart size={16} />
                         </button>
@@ -82,11 +82,11 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* <CartDrawer
+            <CartDrawer
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
                 items={cartDummyItems}
-            /> */}
+            />
         </>
     )
 }
