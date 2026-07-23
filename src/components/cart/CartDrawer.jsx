@@ -2,10 +2,15 @@ import { ShoppingBag, Package, X, ArrowRight } from 'lucide-react'
 import { NavLink } from 'react-router'
 import Button from '../common/Button.jsx'
 import CartItem from './CartItem.jsx'
+import { useContext, useEffect } from 'react'
+import { MyStore } from '../../context/ProductContext.jsx'
 
 const CartDrawer = ({ isOpen, onClose, items = [] }) => {
+
     const isEmpty = items.length === 0
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+
+    const { clearCart } = useContext(MyStore)
 
     return (
         <>
@@ -73,7 +78,9 @@ const CartDrawer = ({ isOpen, onClose, items = [] }) => {
                                 <p className='font-display font-bold'>Checkout</p>
                             </Button>
 
-                            <button className="w-full text-center text-text-muted text-xs mt-4 hover:text-red-400 transition-colors cursor-pointer">
+                            <button 
+                                onClick={clearCart}
+                                className="w-full text-center text-text-muted text-xs mt-4 hover:text-red-400 transition-colors cursor-pointer">
                                 Clear cart
                             </button>
                         </div>

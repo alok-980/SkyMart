@@ -1,10 +1,26 @@
 import { ArrowRight } from 'lucide-react'
 import Button from '../common/Button'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../context/AuthContext'
 
 const HeroBanner = () => {
 
     const navigate = useNavigate()
+    const { user } = useAuth()
+
+    const hour = new Date().getHours();
+
+    let greeting = "";
+
+    if (hour < 12) {
+        greeting = "GOOD MORNING";
+    } else if (hour < 17) {
+        greeting = "GOOD AFTERNOON";
+    } else if (hour < 21) {
+        greeting = "GOOD EVENING";
+    } else {
+        greeting = "GOOD NIGHT";
+    }
 
     return (
         <div
@@ -20,14 +36,14 @@ const HeroBanner = () => {
                     <div className="absolute top-35 -left-25 w-70 h-70 bg-accent rounded-full blur-3xl opacity-20 pointer-events-none" />
 
                     <p className="text-accent text-sm tracking-widest mb-3 font-display">
-                        GOOD EVENING 👋
+                        {greeting} 👋
                     </p>
                     <div className='flex flex-col gap-0'>
                         <h1 className="text-4xl sm:text-5xl font-display font-bold text-text-primary leading-none">
                             Welcome back,
                         </h1>
                         <h1 className="text-4xl sm:text-5xl font-display font-bold text-accent leading-none mb-4">
-                            Alok!
+                            {user.name}!
                         </h1>
                     </div>
                     <p className="text-text-secondary text-[16px] mb-8 max-w-xl">
@@ -39,7 +55,7 @@ const HeroBanner = () => {
                             onClick={() => navigate('/products')}
                             icon={ArrowRight}
                         >Shop Now</Button>
-                        <Button 
+                        <Button
                             onClick={() => navigate('/products')}
                             variant="secondary"
                         >View All Products</Button>

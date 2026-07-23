@@ -18,7 +18,7 @@ const Select = ({ options, value, onChange, className = '' }) => {
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className={`w-full flex items-center justify-between gap-3 font-display bg-text-muted/10 text-[14px] border rounded-2xl px-5 py-2.5 text-text-primary font-medium transition-colors ${open ? 'border-accent' : 'border-border'
+                className={`w-full flex items-center justify-between gap-3 font-display bg-text-muted/10 text-[14px] border rounded-2xl px-5 py-2.5 text-text-primary font-medium transition-colors cursor-pointer ${open ? 'border-accent' : 'border-border'
                     }`}
             >
                 {value}

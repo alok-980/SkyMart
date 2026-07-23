@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
 import { ShoppingCart, LogOut } from 'lucide-react'
 import Logo from '../common/Logo.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
 import CartDrawer from '../cart/CartDrawer.jsx'
 import { cartDummyItems } from '../../data/cartDummy.js'
+import { MyStore } from '../../context/ProductContext.jsx'
 
 const navLinks = [
     { label: 'Home', path: '/home' },
@@ -25,13 +26,15 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    const { logout } = useAuth()
+    const { logout, user } = useAuth()
     const navigate = useNavigate()
 
     const handleLogout = () => {
         logout()
         navigate('/login')
     }
+
+    const { cartItem } = useContext(MyStore)
 
     return (
         <>
@@ -64,16 +67,22 @@ const Navbar = () => {
                             <div className="w-6 h-6 rounded-lg bg-accent text-accent-text font-bold flex items-center justify-center text-xs">
                                 A
                             </div>
-                            <span className="text-text-secondary font-medium text-sm">Alok Chauhan</span>
+                            <span className="text-text-secondary font-medium text-sm">{user.name}</span>
                         </div>
 
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer">
+                            className="relative w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer"
+                        >
                             <ShoppingCart size={16} />
+                            {cartItem.length > 0 && (
+                                <span className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-accent text-accent-text text-xs font-bold rounded-full">
+                                    {cartItem.length}
+                                </span>
+                            )}
                         </button>
 
-                        <button 
+                        <button
                             onClick={handleLogout}
                             className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:text-red-400 hover:border-red-400 hover:bg-red-500/25 transition-colors cursor-pointer">
                             <LogOut size={16} />
@@ -85,7 +94,7 @@ const Navbar = () => {
             <CartDrawer
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
-                items={cartDummyItems}
+                items={cartItem}
             />
         </>
     )

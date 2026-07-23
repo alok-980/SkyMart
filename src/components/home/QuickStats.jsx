@@ -1,13 +1,21 @@
 import { Package, TrendingUp, Star, Tag } from 'lucide-react'
+import { useContext } from 'react'
+import { MyStore } from '../../context/ProductContext'
 
-const stats = [
-    { icon: Package, iconBg: 'bg-accent/20 text-accent', value: '0', label: 'Cart Items', sub: 'In your bag' },
-    { icon: TrendingUp, iconBg: 'bg-blue-500/20 text-blue-400', value: '$0.00', label: 'Cart Value', sub: 'Ready to checkout' },
-    { icon: Star, iconBg: 'bg-orange-500/20 text-orange-400', value: '5', label: 'Top Products', sub: 'Highly rated' },
-    { icon: Tag, iconBg: 'bg-purple-500/20 text-purple-400', value: '6', label: 'Categories', sub: 'To explore' },
-]
+const QuickStats = ({
+    topRatedProducts,
+    categoryOptions
+}) => {
 
-const QuickStats = () => {
+    const { cartTotalValue, cartItem } = useContext(MyStore)
+
+    const stats = [
+        { icon: Package, iconBg: 'bg-accent/20 text-accent', value: `${cartItem.length}`, label: 'Cart Items', sub: 'In your bag' },
+        { icon: TrendingUp, iconBg: 'bg-blue-500/20 text-blue-400', value:`$ ${cartTotalValue.toFixed(2)}`, label: 'Cart Value', sub: 'Ready to checkout' },
+        { icon: Star, iconBg: 'bg-orange-500/20 text-orange-400', value: `${topRatedProducts.length}`, label: 'Top Products', sub: 'Highly rated' },
+        { icon: Tag, iconBg: 'bg-purple-500/20 text-purple-400', value: `${topRatedProducts.length - 1}`, label: 'Categories', sub: 'To explore' },
+    ]
+
     return (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-text-muted/5">
             {stats.map((s) => (

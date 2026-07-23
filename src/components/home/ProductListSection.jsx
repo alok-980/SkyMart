@@ -1,7 +1,22 @@
 import { NavLink } from 'react-router'
 import { ArrowRight, ShoppingBag } from 'lucide-react'
+import { useContext } from 'react'
+import { MyStore } from '../../context/ProductContext'
 
-const ProductListSection = ({ title, icon: Icon, iconColor, products }) => {
+const ProductListSection = ({ title, icon: Icon, iconColor, products, seeAllLink }) => {
+
+    const { cartItem, cartItemQtyIncrement, addToCart } = useContext(MyStore)
+
+    const addOrIncrementInCart = (p) => {
+        let havInCart = cartItem.find((item) => item.id === p.id)
+        
+        if(havInCart) {
+            cartItemQtyIncrement(p.id)
+        } else {
+            addToCart(p.id)
+        }
+    }
+
     return (
         <div className="bg-white rounded-3xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
@@ -10,7 +25,7 @@ const ProductListSection = ({ title, icon: Icon, iconColor, products }) => {
                     <h3 className="text-lg font-display font-bold text-neutral-900">{title}</h3>
                 </div>
                 <NavLink
-                    to="/products"
+                    to={seeAllLink}
                     className="text-accent-dark text-sm font-medium flex items-center gap-1"
                 >
                     See all <ArrowRight size={14} />
@@ -31,7 +46,9 @@ const ProductListSection = ({ title, icon: Icon, iconColor, products }) => {
                             />
                             <p className="text-accent-dark font-display font-bold">${p.price.toFixed(2)}</p>
                         </div>
-                        <button className="w-9 h-9 border border-text-muted/40 hover:border-none rounded-xl bg-accent/15 flex items-center justify-center text-neutral-700 hover:text-neutral-900 hover:bg-accent transition-colors cursor-pointer">
+                        <button 
+                            onClick={() => addOrIncrementInCart(p)}
+                            className="w-9 h-9 border border-text-muted/40 hover:border-none rounded-xl bg-accent/15 flex items-center justify-center text-neutral-700 hover:text-neutral-900 hover:bg-accent transition-colors cursor-pointer">
                             <ShoppingBag size={16} />
                         </button>
                     </div>
