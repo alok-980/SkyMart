@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
-import { ShoppingCart, LogOut } from 'lucide-react'
+import { ShoppingCart, LogOut, Sun, Moon } from 'lucide-react'
+import { Theme } from '../../context/ThemeContext.jsx'
 import Logo from '../common/Logo.jsx'
 import { Auth } from '../../context/AuthContext.jsx'
 import CartDrawer from '../cart/CartDrawer.jsx'
 import { MyStore } from '../../context/ProductContext.jsx'
+import { toast } from 'react-toastify'
 
 const navLinks = [
     { label: 'Home', path: '/home' },
@@ -14,7 +16,10 @@ const navLinks = [
 
 const Navbar = () => {
     const { pathname } = useLocation()
+
     const { isCartOpen, setIsCartOpen } = useContext(MyStore)
+    const { theme, toggleTheme } = useContext(Theme)
+
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
@@ -33,6 +38,7 @@ const Navbar = () => {
     const handleLogout = () => {
         setLoggedInUser(null)
         localStorage.setItem('loggedUser', JSON.stringify(null))
+        toast.info('Logged out successfully!')
     }
 
     return (
@@ -85,6 +91,13 @@ const Navbar = () => {
                             onClick={handleLogout}
                             className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:text-red-400 hover:border-red-400 hover:bg-red-500/25 transition-colors cursor-pointer">
                             <LogOut size={16} />
+                        </button>
+
+                        <button
+                            onClick={toggleTheme}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer"
+                        >
+                            {theme === 'default' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
                     </div>
                 </div>

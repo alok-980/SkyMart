@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const MyStore = createContext()
 
@@ -58,11 +59,13 @@ export const ProductProvider = ({ children }) => {
     const addToCart = (id) => {
         let res = product.find((val) => val.id === id)
         setCartItem((prev) => [...prev, { ...res, qty: 1 }])
+        toast.success('🛒Item added to Cart!')
     }
 
     const removeCartItem = (id) => {
         let res = cartItem.filter((val) => val.id !== id)
         setCartItem(res)
+        toast.info('🛒Item removed from Cart!')
     }
 
     const cartItemQtyIncrement = (id) => {
@@ -83,6 +86,7 @@ export const ProductProvider = ({ children }) => {
 
     const clearCart = () => {
         setCartItem([])
+        toast.info('🛒Cart cleared!')
     }
 
     const cartTotalValue = cartItem.reduce(

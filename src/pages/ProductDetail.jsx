@@ -11,8 +11,9 @@ import {
     ChevronRight,
     Minus,
     Plus,
+    ArrowLeft,
 } from 'lucide-react'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate, NavLink } from 'react-router'
 import axios from 'axios'
 import { MyStore } from '../context/ProductContext.jsx'
 import ProductCard from '../components/shop/ProductCard.jsx'
@@ -96,6 +97,27 @@ const ProductDetail = () => {
                 <ProductDetailSkeleton />
             ) : (
                 <div>
+
+                    <div className="flex items-center gap-2 text-sm text-text-muted mb-6 font-semibold">
+                        <NavLink
+                            to="/products"
+                            className="flex items-center gap-1.5 hover:text-text-primary transition-colors"
+                        >
+                            <ArrowLeft size={16} />
+                            Products
+                        </NavLink>
+                        <span>/</span>
+                        <span className='text-text-secondary'>{singleProduct.category}</span>
+                        <span>/</span>
+                        <span className="text-text-primary">
+                            {
+                                singleProduct.title.split(" ").length > 5
+                                    ? singleProduct.title.split(" ").slice(0, 5).join(" ") + "..."
+                                    : singleProduct.title
+                            }
+                        </span>
+                    </div>
+
                     <div className="grid lg:grid-cols-2 gap-15">
                         {/* Image */}
                         <div className="bg-white rounded-3xl p-8 h-[480px] flex items-center justify-center hover:p-5 transition-[padding] duration-500 ease-in-out">
