@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router'
 
 const ProductCard = ({ product, havInCart }) => {
 
-    const { addToCart } = useContext(MyStore)
+    const { addToCart, setIsCartOpen } = useContext(MyStore)
     const navigate = useNavigate()
 
     return (
@@ -26,7 +26,11 @@ const ProductCard = ({ product, havInCart }) => {
             <div className="p-4 flex flex-col flex-1">
                 <p className="text-text-secondary text-xs mb-1">{product.category}</p>
                 <h3 className="font-display font-bold text-sm text-text-primary mb-2 leading-snug line-clamp-2 min-h-[2.75rem]">
-                    {product.title}
+                    {
+                        product.title.split(" ").length > 5
+                            ? product.title.split(" ").slice(0, 5).join(" ") + "..."
+                            : product.title
+                    }
                 </h3>
 
                 <div className="flex items-center gap-0.5 mb-2">
@@ -50,14 +54,21 @@ const ProductCard = ({ product, havInCart }) => {
                     {
                         havInCart ? (
                             <button
-                                // onClick={() => addToCart(product.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setIsCartOpen(true)
+                                }}
                                 className="flex items-center gap-1.5 bg-green-500/10 border border-green-600 text-green-600 font-semibold text-xs px-4 py-2 rounded-xl hover:brightness-95 transition-all active:scale-95 cursor-pointer">
                                 <Check size={14} />
                                 Added
                             </button>
                         ) : (
                             <button
-                                onClick={() => addToCart(product.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    addToCart(product.id)
+                                    setIsCartOpen(true)
+                                }}
                                 className="flex items-center gap-1.5 bg-accent text-accent-text font-semibold text-xs px-4 py-2 rounded-xl hover:brightness-95 transition-all active:scale-95 cursor-pointer">
                                 <ShoppingCart size={14} />
                                 Add

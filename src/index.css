@@ -15,14 +15,15 @@
 }
 
 :root {
-    /* Light theme (default) */
-    /* --color-bg: #ffffff;
-    --color-bg-secondary: #f5f5f5;
-    --color-surface: #ffffff;
-    --color-border: #e5e5e5;
-    --color-text-primary: #0a0a0a;
-    --color-text-secondary: #525252;
-    --color-text-muted: #a3a3a3; */
+    /* deep-forest */
+    /* --color-bg: #0a0f0a;
+    --color-bg-secondary: #121a12;
+    --color-surface: #161f16;
+    --color-border: #253326;
+    --color-text-primary: #f0f5ec;
+    --color-text-secondary: #9cae94;
+    --color-text-muted: #5f6f58; */
+
 
     --color-bg: rgb(13, 13, 13);
     --color-bg-secondary: #0d0d0d;

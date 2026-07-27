@@ -1,12 +1,13 @@
 import { ArrowRight } from 'lucide-react'
 import Button from '../common/Button'
 import { useNavigate } from 'react-router'
-import { useAuth } from '../../context/AuthContext'
+import { Auth } from '../../context/AuthContext'
+import { useContext } from 'react'
 
 const HeroBanner = () => {
 
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { loggedInUser } = useContext(Auth)
 
     const hour = new Date().getHours();
 
@@ -43,7 +44,7 @@ const HeroBanner = () => {
                             Welcome back,
                         </h1>
                         <h1 className="text-4xl sm:text-5xl font-display font-bold text-accent leading-none mb-4">
-                            {user.name}!
+                            {loggedInUser.name?.split(' ')[0]}!
                         </h1>
                     </div>
                     <p className="text-text-secondary text-[16px] mb-8 max-w-xl">

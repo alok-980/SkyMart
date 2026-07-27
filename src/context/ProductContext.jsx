@@ -18,6 +18,7 @@ const getCartItems = () => {
 export const ProductProvider = ({ children }) => {
 
     const [product, setProduct] = useState([])
+    const [isCartOpen, setIsCartOpen] = useState(false)
     const [cartItem, setCartItem] = useState(getCartItems || [])
     const [categoryOptions, setCategoryOptions] = useState(['All Categories'])
     const [sortOptions, setSortOptiond] = useState([
@@ -101,6 +102,8 @@ export const ProductProvider = ({ children }) => {
         cartItemQtyIncrement,
         cartItemQtyDecrement,
         cartTotalValue,
-        clearCart
+        clearCart,
+        isCartOpen,
+        setIsCartOpen
     }}>{children}</MyStore.Provider>
 }

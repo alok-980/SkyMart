@@ -1,11 +1,13 @@
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { ArrowRight, ShoppingBag } from 'lucide-react'
 import { useContext } from 'react'
 import { MyStore } from '../../context/ProductContext'
 
 const ProductListSection = ({ title, icon: Icon, iconColor, products, seeAllLink }) => {
 
-    const { cartItem, cartItemQtyIncrement, addToCart } = useContext(MyStore)
+    const navigate = useNavigate()
+
+    const { cartItem, cartItemQtyIncrement, addToCart, setIsCartOpen } = useContext(MyStore)
 
     const addOrIncrementInCart = (p) => {
         let havInCart = cartItem.find((item) => item.id === p.id)
@@ -35,6 +37,7 @@ const ProductListSection = ({ title, icon: Icon, iconColor, products, seeAllLink
             <div className="space-y-3">
                 {products.map((p) => (
                     <div
+                        onClick={() => navigate(`/products/${p.id}`)}
                         key={p.id}
                         className="flex items-center justify-between border border-neutral-200 rounded-2xl p-3 shadow-lg shadow-transparent hover:border-accent/60 hover:shadow-text-secondary/30 transition-all duration-300 cursor-pointer"
                     >
@@ -47,7 +50,11 @@ const ProductListSection = ({ title, icon: Icon, iconColor, products, seeAllLink
                             <p className="text-accent-dark font-display font-bold">${p.price.toFixed(2)}</p>
                         </div>
                         <button 
-                            onClick={() => addOrIncrementInCart(p)}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                addOrIncrementInCart(p)
+                                setIsCartOpen(true)
+                            }}
                             className="w-9 h-9 border border-text-muted/40 hover:border-none rounded-xl bg-accent/15 flex items-center justify-center text-neutral-700 hover:text-neutral-900 hover:bg-accent transition-colors cursor-pointer">
                             <ShoppingBag size={16} />
                         </button>

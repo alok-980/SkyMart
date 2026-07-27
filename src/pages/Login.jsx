@@ -3,26 +3,34 @@ import { NavLink, useNavigate } from 'react-router'
 import AuthLayout from '../components/layout/AuthLayout.jsx'
 import Input from '../components/common/Input.jsx'
 import Button from '../components/common/Button.jsx'
-import { useState } from 'react'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useContext } from 'react'
+import { toast } from 'react-toastify';
+import { Auth } from '../context/AuthContext.jsx'
+import { useForm } from 'react-hook-form'
 
 const Login = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm({
+        defaultValues: { email: '', password: '' }
+    })
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const { login } = useAuth()
+    const { registerUsers, setLoggedInUser } = useContext(Auth)
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        setError('')
+    const handleLogin = (data) => {
+        const user = registerUsers.find((user) => user.email === data.email && user.password === data.password)
 
-        const res = login({ email, password })
-        if (!res.success) {
-            setError(res.message)
+        if (!user) {
+            toast.error('Invalid creds or user not found')
             return
         }
+
+        setLoggedInUser(user)
+        localStorage.setItem('loggedUser', JSON.stringify(user))
+        toast.success(`Welcome Back! ${user.name}`)
 
         navigate('/home')
     }
@@ -34,7 +42,7 @@ const Login = () => {
                 <p className="text-text-secondary mb-8 font-display">Enter your credentials to continue</p>
 
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(handleLogin)}
                     className="space-y-4 font-display"
                     noValidate
                 >
@@ -42,23 +50,38 @@ const Login = () => {
                         type="email"
                         icon={Mail}
                         placeholder="Email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        {...register('email', {
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Enter a valid email address'
+                            }
+                        })}
+                        error={errors.email?.message}
                     />
+                    {errors.email && (
+                        <p className="text-red-500 text-sm font-medium">{errors.email.message}</p>
+                    )}
+
                     <Input
                         isPassword
                         icon={Lock}
                         placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                        {...register('password', {
+                            required: 'Password is required',
+                            minLength: {
+                                value: 6,
+                                message: 'Password must be at least 6 characters'
+                            }
+                        })}
+                        error={errors.password?.message}
                     />
+                    {errors.password && (
+                        <p className="text-red-500 text-sm font-medium">{errors.password.message}</p>
+                    )}
 
-                    {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-
-                    <Button type="submit" className="w-full mt-2" icon={ArrowRight}>
-                        Sign in
+                    <Button type="submit" className="w-full mt-2" icon={ArrowRight} disabled={isSubmitting}>
+                        {isSubmitting ? 'Signing in...' : 'Sign in'}
                     </Button>
                 </form>
 

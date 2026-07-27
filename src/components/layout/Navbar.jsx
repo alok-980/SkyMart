@@ -2,9 +2,8 @@ import { useState, useEffect, useContext } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
 import { ShoppingCart, LogOut } from 'lucide-react'
 import Logo from '../common/Logo.jsx'
-import { useAuth } from '../../context/AuthContext.jsx'
+import { Auth } from '../../context/AuthContext.jsx'
 import CartDrawer from '../cart/CartDrawer.jsx'
-import { cartDummyItems } from '../../data/cartDummy.js'
 import { MyStore } from '../../context/ProductContext.jsx'
 
 const navLinks = [
@@ -15,7 +14,7 @@ const navLinks = [
 
 const Navbar = () => {
     const { pathname } = useLocation()
-    const [isCartOpen, setIsCartOpen] = useState(false)
+    const { isCartOpen, setIsCartOpen } = useContext(MyStore)
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
@@ -26,20 +25,20 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    const { logout, user } = useAuth()
+    const { loggedInUser, setLoggedInUser } = useContext(Auth)
+    const { cartItem } = useContext(MyStore)
+
     const navigate = useNavigate()
 
     const handleLogout = () => {
-        logout()
-        navigate('/login')
+        setLoggedInUser(null)
+        localStorage.setItem('loggedUser', JSON.stringify(null))
     }
-
-    const { cartItem } = useContext(MyStore)
 
     return (
         <>
             <nav
-                className={`sticky top-0 z-30 bg-bg transition-colors duration-200 ${isScrolled ? 'border-b' : 'border-b border-transparent'
+                className={`sticky top-0 z-30 bg-bg/99 transition-colors duration-200 ${isScrolled ? 'border-b' : 'border-b border-transparent'
                     }`}
             >
                 <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
@@ -67,7 +66,7 @@ const Navbar = () => {
                             <div className="w-6 h-6 rounded-lg bg-accent text-accent-text font-bold flex items-center justify-center text-xs">
                                 A
                             </div>
-                            <span className="text-text-secondary font-medium text-sm">{user.name}</span>
+                            <span className="text-text-secondary font-medium text-sm">{loggedInUser.name}</span>
                         </div>
 
                         <button

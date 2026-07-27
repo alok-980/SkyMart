@@ -1,31 +1,20 @@
-import { createContext, useContext, useState } from 'react'
-import { getCurrentUser, loginUser, logoutUser, registerUser } from '../utils/auth.js'
+import { createContext, useState } from "react";
 
-const AuthContext = createContext(null)
+export const Auth = createContext()
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(getCurrentUser())
+export const AuthContext = ({ children }) => {
 
-    const register = (data) => {
-        return registerUser(data)
-    }
-
-    const login = (data) => {
-        const result = loginUser(data)
-        if (result.success) setUser(result.user)
-        return result
-    }
-
-    const logout = () => {
-        logoutUser()
-        setUser(null)
-    }
-
-    return (
-        <AuthContext.Provider value={{ user, register, login, logout }}>
-            {children}
-        </AuthContext.Provider>
+    const [registerUsers, setRegisterUsers] = useState(
+        JSON.parse(localStorage.getItem('skyMartUsers')) || []
     )
-}
+    const [loggedInUser, setLoggedInUser] = useState(
+        JSON.parse(localStorage.getItem('loggedUser'))
+    )
 
-export const useAuth = () => useContext(AuthContext)
+    return <Auth.Provider value={{
+        registerUsers,
+        setRegisterUsers,
+        loggedInUser,
+        setLoggedInUser,
+    }}>{children}</Auth.Provider>
+}

@@ -3,39 +3,42 @@ import { NavLink, useNavigate } from 'react-router'
 import Logo from '../components/common/Logo.jsx'
 import Input from '../components/common/Input.jsx'
 import Button from '../components/common/Button.jsx'
-import { useState } from 'react'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useContext } from 'react'
+import { toast } from 'react-toastify';
+import { Auth } from '../context/AuthContext.jsx'
+import { useForm } from 'react-hook-form'
 
 const Register = () => {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors, isSubmitting },
+        reset
+    } = useForm({
+        defaultValues: { name: '', email: '', password: '', confirmPassword: '' }
+    })
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [error, setError] = useState('')
-    const { register } = useAuth()
     const navigate = useNavigate()
+    const { registerUsers, setRegisterUsers } = useContext(Auth)
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        setError('')
+    const password = watch('password')
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters.')
+    const handleRegister = (data) => {
+        const user = registerUsers.find((user) => user.email === data.email)
+
+        if (user) {
+            toast.error('An user with this email allready exist!')
+            reset()
             return
         }
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.')
-            return
-        }
+        let res = [...registerUsers, data]
+        setRegisterUsers(res)
+        localStorage.setItem('skyMartUsers', JSON.stringify(res))
+        toast.success('Your registration is successfull!')
 
-        const res = register({ name, email, password })
-        if (!res.success) {
-            setError(res.message)
-            return
-        }
-
+        reset()
         navigate('/login')
     }
 
@@ -50,7 +53,7 @@ const Register = () => {
                 <p className="text-text-muted text-[15px] font-semibold mb-8">Join SkyMart and start shopping</p>
 
                 <form
-                    onClick={handleSubmit}
+                    onSubmit={handleSubmit(handleRegister)}
                     className="space-y-4"
                     noValidate
                 >
@@ -58,42 +61,70 @@ const Register = () => {
                         type="text"
                         icon={User}
                         placeholder="Full name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
+                        {...register('name', {
+                            required: 'Full name is required',
+                            minLength: {
+                                value: 3,
+                                message: 'Name must be at least 3 characters'
+                            }
+                        })}
+                        error={errors.name?.message}
                     />
+                    {errors.name && (
+                        <p className="text-red-500 text-sm font-medium">{errors.name.message}</p>
+                    )}
 
                     <Input
                         type="email"
                         icon={Mail}
                         placeholder="Email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        {...register('email', {
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Enter a valid email address'
+                            }
+                        })}
+                        error={errors.email?.message}
                     />
+                    {errors.email && (
+                        <p className="text-red-500 text-sm font-medium">{errors.email.message}</p>
+                    )}
 
                     <Input
                         isPassword
                         icon={Lock}
                         placeholder="Password (min 6 chars)"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                        {...register('password', {
+                            required: 'Password is required',
+                            minLength: {
+                                value: 6,
+                                message: 'Password must be at least 6 characters'
+                            }
+                        })}
+                        error={errors.password?.message}
                     />
+                    {errors.password && (
+                        <p className="text-red-500 text-sm font-medium">{errors.password.message}</p>
+                    )}
 
                     <Input
                         isPassword
                         icon={Lock}
                         placeholder="Confirm password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
+                        {...register('confirmPassword', {
+                            required: 'Please confirm your password',
+                            validate: (value) =>
+                                value === password || 'Passwords do not match'
+                        })}
+                        error={errors.confirmPassword?.message}
                     />
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm font-medium">{errors.confirmPassword.message}</p>
+                    )}
 
-                    {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-
-                    <Button type="submit" className="w-full mt-2" icon={ArrowRight}>
-                        <p className='font-bold font-display'>Create Account</p>
+                    <Button type="submit" className="w-full mt-2" icon={ArrowRight} disabled={isSubmitting}>
+                        <p className='font-bold font-display'>{isSubmitting ? 'Creating account...' : 'Create Account'}</p>
                     </Button>
                 </form>
 
