@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
-import { ShoppingCart, LogOut, Sun, Moon } from 'lucide-react'
+import { ShoppingCart, LogOut, Sun, Moon, Menu, X } from 'lucide-react'
 import { Theme } from '../../context/ThemeContext.jsx'
 import Logo from '../common/Logo.jsx'
 import { Auth } from '../../context/AuthContext.jsx'
 import CartDrawer from '../cart/CartDrawer.jsx'
 import { MyStore } from '../../context/ProductContext.jsx'
 import { toast } from 'react-toastify'
+import MobileMenu from './MobileMenu.jsx'
 
 const navLinks = [
     { label: 'Home', path: '/home' },
@@ -21,6 +22,7 @@ const Navbar = () => {
     const { theme, toggleTheme } = useContext(Theme)
 
     const [isScrolled, setIsScrolled] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -29,6 +31,10 @@ const Navbar = () => {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
+
+    useEffect(() => {
+        setIsMobileMenuOpen(false)
+    }, [pathname])
 
     const { loggedInUser, setLoggedInUser } = useContext(Auth)
     const { cartItem } = useContext(MyStore)
@@ -44,7 +50,7 @@ const Navbar = () => {
     return (
         <>
             <nav
-                className={`sticky top-0 z-30 bg-bg/99 transition-colors duration-200 ${isScrolled ? 'border-b' : 'border-b border-transparent'
+                className={`relative sticky top-0 z-30 bg-bg/99 transition-colors duration-200 ${isScrolled ? 'border-b' : 'border-b border-transparent'
                     }`}
             >
                 <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
@@ -89,18 +95,33 @@ const Navbar = () => {
 
                         <button
                             onClick={handleLogout}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:text-red-400 hover:border-red-400 hover:bg-red-500/25 transition-colors cursor-pointer">
+                            className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl border border-border text-text-primary hover:text-red-400 hover:border-red-400 hover:bg-red-500/25 transition-colors cursor-pointer">
                             <LogOut size={16} />
                         </button>
 
                         <button
                             onClick={toggleTheme}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer"
+                            className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer"
                         >
                             {theme === 'default' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
+
+                        <button
+                            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-border text-text-primary hover:border-accent/50 hover:bg-accent/20 transition-colors cursor-pointer"
+                        >
+                            {isMobileMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                        </button>
                     </div>
                 </div>
+
+                <MobileMenu
+                    isOpen={isMobileMenuOpen}
+                    onClose={() => setIsMobileMenuOpen(false)}
+                    navLinks={navLinks}
+                    pathname={pathname}
+                    onLogout={handleLogout}
+                />
             </nav>
 
             <CartDrawer

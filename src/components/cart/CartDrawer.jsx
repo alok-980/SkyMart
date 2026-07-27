@@ -4,6 +4,7 @@ import Button from '../common/Button.jsx'
 import CartItem from './CartItem.jsx'
 import { useContext, useEffect } from 'react'
 import { MyStore } from '../../context/ProductContext.jsx'
+import { toast } from 'react-toastify'
 
 const CartDrawer = ({ isOpen, onClose, items = [] }) => {
 
@@ -74,7 +75,12 @@ const CartDrawer = ({ isOpen, onClose, items = [] }) => {
                                 </span>
                             </div>
 
-                            <Button icon={ArrowRight} className="w-full">
+                            <Button 
+                                onClick={() => {
+                                    clearCart()
+                                    toast.success('Order Placed!🎉 (Demo)')
+                                }}
+                                icon={ArrowRight} className="w-full">
                                 <p className='font-display font-bold'>Checkout</p>
                             </Button>
 
